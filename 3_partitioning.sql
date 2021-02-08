@@ -26,7 +26,7 @@ END;
 PARTITIONING data into 3 sections 
 */
 
--- 1) Create groups of files 
+-- 1) Creating groups of files 
 
 -- Creating files included in groups
 
@@ -77,7 +77,7 @@ CREATE PARTITION SCHEME scheme_partitioning
 AS PARTITION fun_partitioning
 TO (g1, g2, g3);
 
--- 4) Create a new split table (blank)
+-- 4) Creating a new split table (blank)
 CREATE TABLE new_table (col1 INT, col2 INT)
 ON scheme_partitioning(col1);
 
