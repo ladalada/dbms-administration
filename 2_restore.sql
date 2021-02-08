@@ -20,7 +20,7 @@ BEGIN
 		DECLARE @full_path NVARCHAR(256);
 		DECLARE @diff_path NVARCHAR(256);
 		
-		-- Find the last full backup with creation date <= @restore_datetime
+		-- Finding the last full backup with creation date <= @restore_datetime
 		SELECT @full_datetime = (
 			SELECT TOP 1 backup_datetime
 			FROM master.dbo.table_backups
@@ -36,7 +36,7 @@ BEGIN
 				AND backup_datetime = @full_datetime
 			ORDER BY backup_datetime DESC);
 
-		-- Find the last differential backup with creation date <= @restore_datetime
+		-- Finding the last differential backup with creation date <= @restore_datetime
 		SELECT @diff_datetime = (
 			SELECT TOP 1 backup_datetime 
 			FROM master.dbo.table_backups
@@ -55,12 +55,12 @@ BEGIN
 		-- If a full backup was created before the differential
 		IF @full_datetime < @diff_datetime 
 		BEGIN
-			-- restore full backup
+			-- Restoring full backup
 			RESTORE DATABASE @db
 			FROM DISK = @full_path
 			WITH REPLACE, NORECOVERY;
 
-			-- restoring differential backup
+			-- Restoring differential backup
 			RESTORE DATABASE @db
 			FROM DISK = @diff_path
 			WITH RECOVERY;
@@ -69,7 +69,7 @@ BEGIN
 		-- If a differential backup was created before a full
 		ELSE
 		BEGIN
-			-- restoring only a full backup
+			-- Restoring only a full backup
 			RESTORE DATABASE @db
 			FROM DISK = @full_path
 			WITH REPLACE, RECOVERY;
