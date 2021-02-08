@@ -72,7 +72,7 @@ BEGIN
 			-- restoring only a full backup
 			RESTORE DATABASE @db
 			FROM DISK = @full_path
-			WITh REPLACE, RECOVERY;
+			WITH REPLACE, RECOVERY;
 		END
 
 	END;
