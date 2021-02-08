@@ -1,9 +1,9 @@
--- Создание бд
+-- Database creation
 CREATE DATABASE db_users;
 
 USE db_users;
 
--- Создание простых таблиц
+-- Creating simple tables
 CREATE TABLE table1 (
 	id INT, 
 	col1 VARCHAR(20)
@@ -13,14 +13,14 @@ CREATE TABLE table2 (
 	col2 INT
 );
 
--- Создание логина для бд
+-- Creating a login for the database
 CREATE LOGIN NinaLogin WITH PASSWORD = 'NinaPassword';
 
--- Добавление пользователя на основе логина
+-- Add user based on login
 CREATE USER Nina FOR LOGIN NinaLogin;
 
--- Предоставление разрешений пользователю
--- на действия в таблицах 
+-- Granting user permissions
+-- to actions on tables 
 GRANT SELECT ON db_users.dbo.table1 TO [Nina];
 GRANT UPDATE ON db_users.dbo.table1 TO [Nina];
 GRANT INSERT ON db_users.dbo.table2 TO [Nina];
