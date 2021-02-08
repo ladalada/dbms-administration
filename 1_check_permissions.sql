@@ -1,5 +1,5 @@
--- Хранимая процедура, выдающая все права пользователя
--- на действия в каждой таблице текущей бд
+-- Stored procedure that grants all user rights 
+-- to actions in each table of the current database
 
 CREATE PROCEDURE Check_permissions @user VARCHAR(50) AS
 BEGIN
@@ -16,5 +16,5 @@ BEGIN
 	EXEC(@SQL)
 END;
 
--- Выполнение процедуры
+-- Procedure execution
 EXEC Check_permissions @user = 'Nina';
