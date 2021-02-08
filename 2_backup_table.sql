@@ -3,11 +3,11 @@ USE master;
 DROP PROCEDURE IF EXISTS create_backup;
 
 /*
-Таблица для хранения записей о созданных бэкапах:
-	название бд, чей бэкап создается,
-	дата создания бэкапа,
-	путь до бэкапа,
-	указание, полный ли бэкап создается
+A table for storing records about created backups:
+	the name of the database whose backup is being created,
+	the date the backup was created,
+	path to backup,
+	indicating whether a full backup is being created
 */
 IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'table_backups')
 BEGIN
@@ -15,7 +15,7 @@ BEGIN
 		backup_db NVARCHAR(256),
 		backup_datetime NVARCHAR(256),
 		backup_path NVARCHAR(256),
-		backup_is_full BIT -- 1 полный бэкап, 0 разностный бэкап
+		backup_is_full BIT -- 1 full backup, 0 differential backup
 	)
 END;
 
