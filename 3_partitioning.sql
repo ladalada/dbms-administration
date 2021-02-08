@@ -1,18 +1,18 @@
 /* 
-SQL-код для разделения таблицы с данными 
-путем создания пустой разделенной таблицы, 
-переноса данных и переименовывания таблиц
+SQL code to split a table of data
+by creating an empty split table,
+transferring data, and renaming tables
 */
 
--- Создание бд
+-- Database creation
 CREATE DATABASE db_partitioning;
 
 USE db_partitioning;
 
--- Создание таблицы для разделения
+-- Creating a table to split
 CREATE TABLE table_for_partitioning(col1 INT, col2 INT);
 
--- Заполнение таблицы данными
+-- Populating a table with data
 DECLARE @i INT;
 SET @i = 0;
 WHILE (@i < 90)
@@ -23,12 +23,12 @@ BEGIN
 END;
 
 /* 
-Разделение данных на 3 раздела (PARTITIONING) 
+PARTITIONING data into 3 sections 
 */
 
--- 1) Создание групп файлов 
+-- 1) Create groups of files 
 
--- Создание файлов, входящих в группы
+-- Creating files included in groups
 
 ALTER DATABASE db_partitioning 
 ADD FILEGROUP g1;
@@ -39,7 +39,7 @@ ADD FILEGROUP g2;
 ALTER DATABASE db_partitioning
 ADD FILEGROUP g3;
 
--- Добавление файлов в каждую группу
+-- Adding files to each group
 
 ALTER DATABASE db_partitioning
 ADD FILE 
@@ -62,9 +62,9 @@ ADD FILE
 	FILENAME = 'C:\Program Files\Microsoft SQL Server\MSSQL15.MSSQLSERVER03\MSSQL\DATA\f3.ndf'
 ) TO FILEGROUP g3;
 
--- 2) Создание функции разделения (PARTITION FUNCTION) 
+-- 2) Creating a PARTITION FUNCTION
 /* 
-Функция разделения данных на 3 секции:
+Function for dividing data into 3 sections:
 	col1 <= 40
 	col1 > 40 AND col1 <= 60
 	col1 > 60
@@ -72,30 +72,30 @@ ADD FILE
 CREATE PARTITION FUNCTION fun_partitioning (INT) 
 AS RANGE LEFT FOR VALUES (40, 60);
 
--- 3) Создание схемы разделения (PARTITION SCHEME)
+-- 3) Creating a PARTITION SCHEME 
 CREATE PARTITION SCHEME scheme_partitioning
 AS PARTITION fun_partitioning
 TO (g1, g2, g3);
 
--- 4) Создание новой разделенной таблицы (незаполненной)
+-- 4) Create a new split table (blank)
 CREATE TABLE new_table (col1 INT, col2 INT)
 ON scheme_partitioning(col1);
 
--- Перенос данных в новую таблицу
+-- Transferring data to a new table
 INSERT INTO new_table(col1, col2)
 SELECT col1, col2 FROM table_for_partitioning;
 
--- Проверка разделения данных исходной таблицы
+-- Checking the data partitioning of the source table
 SELECT o.name table_name, partition_id, partition_number, [rows]
 FROM sys.partitions p
 INNER JOIN sys.objects o ON o.object_id = p.object_id
 WHERE o.name = 'table_for_partitioning';
 
--- Переименовывание таблиц
+-- Renaming tables
 EXEC sp_rename table_for_partitioning, old_table; 
 EXEC sp_rename new_table, table_for_partitioning;
 
--- Проверка разделения данных разделенной таблицы
+-- Checking data partitioning of a partitioned table
 SELECT o.name table_name, partition_id, partition_number, [rows]
 FROM sys.partitions p
 INNER JOIN sys.objects o ON o.object_id = p.object_id
